@@ -1,0 +1,50 @@
+pipeline {
+    agent {
+        node {
+           label 'Agent-1'   
+        }
+    }
+    environment {
+        Greeting = 'Vachindroy...'
+    }
+
+    options {
+        // Timeout counter starts AFTER agent is allocated
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+    }
+    stages {
+         stage('init') {
+            steps {
+                sh """
+                    cd 01-vpc
+                    terraform init -reconfigure
+                """
+            }
+        }
+        stage('plan') {
+            steps {
+                sh """
+                     cd 01-vpc
+                     terraform plan
+                """
+            }
+        }
+        stage('aplly') {
+            steps {
+                sh """
+                     cd 01-vpc
+                     terraform apply -auto-approve
+                """
+            }
+        }
+    }
+    post {
+        success {
+            echo 'I succeeded!'
+        }
+        failure {
+            echo 'I failed :('
+        }
+    }
+}
