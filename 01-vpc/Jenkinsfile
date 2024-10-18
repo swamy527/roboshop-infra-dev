@@ -36,7 +36,9 @@ pipeline {
         }
         stage('apply') {
             when{
-                params.Action == 'apply'
+                expression {
+                    params.Action == 'apply'
+                }
             }
             input {
                 message "should we continue?"
@@ -50,8 +52,10 @@ pipeline {
             }
         }
         stage('destroy') {
-            when{
-                params.Action == 'destroy'
+             when{
+                expression {
+                    params.Action == 'destroy'
+                }
             }
             input {
                 message "should we continue?"
