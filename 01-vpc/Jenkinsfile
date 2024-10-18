@@ -35,7 +35,7 @@ pipeline {
             }
         }
         stage('apply') {
-            when{
+            when {
                 expression {
                     params.Action == 'apply'
                 }
@@ -52,7 +52,7 @@ pipeline {
             }
         }
         stage('destroy') {
-             when{
+             when {
                 expression {
                     params.Action == 'destroy'
                 }
