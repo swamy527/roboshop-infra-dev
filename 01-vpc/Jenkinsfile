@@ -14,6 +14,9 @@ pipeline {
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
+    parameters{
+        choice(name: 'Action', choices: ['destroy', 'apply'], description: 'Pick something')
+    }
     stages {
          stage('init') {
             steps {
@@ -31,7 +34,29 @@ pipeline {
                 """
             }
         }
+        stage('apply') {
+            when{
+                params.Action == 'apply'
+            }
+            input {
+                message "should we continue?"
+                ok "yes we should"
+            }
+            steps {
+                sh """
+                     cd 01-vpc
+                     terraform apply -auto-approve
+                """
+            }
+        }
         stage('destroy') {
+            when{
+                params.Action == 'destroy'
+            }
+            input {
+                message "should we continue?"
+                ok "yes we should"
+            }
             steps {
                 sh """
                      cd 01-vpc
@@ -46,6 +71,9 @@ pipeline {
         }
         failure {
             echo 'I failed :('
+        }
+        always {
+            echo 'all stages executed properly!'
         }
     }
 }
